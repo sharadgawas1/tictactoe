@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tictactoe-deployment
+  labels:
+    app: tictactoe
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tictactoe
+  template:
+    metadata:
+      labels:
+        app: tictactoe
+    spec:
+      containers:
+        - name: tictactoe-container
+          image: sharadgawas1/tictactoe-game:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tictactoe-nodeport
+spec:
+  selector:
+    app: tictactoe
+  type: NodePort
+  ports:
+    - name: http
+      port: 80          # service port
+      targetPort: 80     # container port
+      nodePort: 30080    # external access port (between 30000–32767)
